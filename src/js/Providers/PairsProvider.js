@@ -4,41 +4,41 @@ export const PairsContext = createContext(undefined);
 
 function PairsProvider({children}) {
     const [pairs, setPairs] = useState(null);
-    const [pairsLoaded, setPairsLoaded] = useState(false);
     const [selectedPair, setSelectedPair] = useState('BTC / USD');
     const [selectedPairData, setSelectedPairData] = useState(null);
+    const [selectedPairBasePrice, setSelectedPairBasePrice] = useState(null);
+    const [pairsAvailable, setPairsAvailable] = useState(false);
+
 
     const findSelectedPairData = (data) => data.find(pair => pair.pair === selectedPair);
 
     useEffect(() => {
-        if(!pairsLoaded) {
-            const fetchPairs = async () => await (await fetch('https://api.jurerotar.si/bitstamp/pairs.json')).json();
-            (async () => {
-                const data = await fetchPairs();
-                setPairs(await data);
-                setSelectedPairData(findSelectedPairData(data));
-                setPairsLoaded(true);
-            })();
-        }
+        const fetchPairs = async () => await (await fetch('https://api.jurerotar.si/bitstamp/pairs.json')).json();
+        (async () => {
+            const data = await fetchPairs();
+            setPairs(await data);
+        })();
     }, []);
 
     useEffect(() => {
-        console.log("pairs", pairsLoaded)
-    }, [pairs]);
+        if(pairs) {
+            setPairsAvailable(false);
 
+            setSelectedPairData(findSelectedPairData(pairs));
+            setSelectedPairBasePrice(findSelectedPairData(pairs).base_price);
 
-    // useEffect(() => {
-    //     if(!pairsLoaded) {
-    //         setSelectedPairData(findSelectedPairData(pairs));
-    //     }
-    // }, [selectedPair]);
+            setPairsAvailable(true);
+        }
+    }, [pairs, selectedPair]);
 
     const value = {
         pairs,
-        pairsLoaded,
+        pairsAvailable,
         selectedPair,
         setSelectedPair,
-        selectedPairData
+        selectedPairData,
+        selectedPairBasePrice,
+        setSelectedPairBasePrice
     }
     return (
        <PairsContext.Provider value = {value}>

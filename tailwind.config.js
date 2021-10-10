@@ -7,6 +7,8 @@ module.exports = {
                 'gray-550': '#313337',
                 'gray-750': '#1C1D20',
                 'gray-1000': '#18191B',
+                'green-default': '#159f49',
+                'red-default': '#df4249',
             },
             gridTemplateRows: {
                 'tablet-auto': 'auto auto auto'

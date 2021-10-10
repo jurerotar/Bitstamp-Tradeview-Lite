@@ -4,10 +4,10 @@ import {useModals} from "../../../Providers/ModalsProvider";
 import PairModal from "./PairModal";
 
 export default function SelectedPair() {
-    const {pairsLoaded, selectedPairData} = usePairs();
+    const {pairsAvailable, selectedPairData, selectedPairBasePrice} = usePairs();
     const {isPairsModalOpen, setIsPairsModalOpen} = useModals();
 
-    return (pairsLoaded && selectedPairData !== null) ? (
+    return (pairsAvailable) ? (
         <div className="flex items-center relative w-full">
             <button className="text-blue-400" onClick={() => setIsPairsModalOpen(true)}>
                 <span className="font-semibold mr-2">{selectedPairData.pair}</span>
@@ -15,7 +15,7 @@ export default function SelectedPair() {
             </button>
             <div className="ml-4 flex items-center">
                 <span className="text-gray-300 mr-2">{selectedPairData.convert_to}</span>
-                <span className="font-medium text-white">{selectedPairData.base_price}</span>
+                <span className="font-medium text-white">{selectedPairBasePrice}</span>
             </div>
             {(isPairsModalOpen) ? <PairModal /> : null}
         </div>

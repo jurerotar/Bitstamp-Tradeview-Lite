@@ -5,7 +5,7 @@ import {usePairsSearchQuery} from "../../../Providers/PairsSearchQueryProvider";
 
 export default function PairModal() {
     const {setIsPairsModalOpen} = useModals();
-    const {pairs, pairsLoaded, selectedPair, setSelectedPair} = usePairs();
+    const {pairs, pairsAvailable, selectedPair, setSelectedPair} = usePairs();
     const {searchQuery, setSearchQuery} = usePairsSearchQuery();
 
     const colorChange = (change) => (change >= 0) ? 'text-green-500' : 'text-red-500';
@@ -27,7 +27,7 @@ export default function PairModal() {
                 <p className="font-bold text-white text-xs flex flex-1 justify-end items-center">{pair.volume / 1000} k</p>
             </div>
         });
-    return (pairsLoaded) ? (
+    return (pairsAvailable) ? (
         <div
             className="flex flex-col z-10 absolute top-0 left-0 bg-gray-550 rounded-sm max-h-120 md:max-h-96 w-full md:w-screen max-w-pairs">
             <div

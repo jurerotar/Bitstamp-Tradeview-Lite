@@ -1,7 +1,7 @@
 import Logo from "./Logo";
 import NavigationLinks from "./NavigationLinks";
-import {useWindowDimensions} from "../../../Plugins/functions";
-import {breakpoints} from "../../../Plugins/constants";
+import {useWindowDimensions} from "../../../Helpers/functions";
+import {breakpoints} from "../../../Helpers/constants";
 export default function Header() {
     const { width } = useWindowDimensions();
 

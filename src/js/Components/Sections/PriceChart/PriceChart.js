@@ -1,64 +1,78 @@
-import {createChart} from 'lightweight-charts';
 import {useEffect, useState} from "react";
-import {useCurrentTrades} from "../../../Providers/TradesProvider";
-import {graphOptions} from "../../../Plugins/constants";
+import {useTrades} from "../../../Providers/TradesProvider";
+import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine} from 'recharts';
+import {usePairs} from "../../../Providers/PairsProvider";
+import {domainRange} from "../../../Helpers/functions";
+import {useDeviceProperties} from "../../../Providers/DevicePropertiesProvider";
+import {breakpoints} from "../../../Helpers/constants";
+import SectionTitle from "../../Common/SectionTitle";
 
 export default function PriceChart() {
-    const {currentTrades, currentTradesLoaded} = useCurrentTrades();
-    const [chart, setChart] = useState(null);
+    const {trades} = useTrades();
+    const {selectedPairData, selectedPairBasePrice} = usePairs();
+    const {width} = useDeviceProperties();
 
-    const resize = () => {
-        if(chart && currentTradesLoaded) {
-            chart.remove();
-            setChart(createChart(document.querySelector('#price-chart'), graphOptions));
-        }
-    }
-
-    const chartData = (trades) => trades.reverse().map(trade => {
-        return {
-            time: trade.timestamp,
-            value: trade.price
-        }
-    });
-
+    const [data, setData] = useState([]);
+    const [basePrice, setBasePrice] = useState(null);
 
     useEffect(() => {
-        window.addEventListener('resize', resize);
-        return () => window.removeEventListener('resize', resize);
-    }, [currentTradesLoaded, chart]);
-
-    useEffect(() => {
-        if (currentTradesLoaded) {
-            const data = chartData(currentTrades);
-            setChart(createChart(document.querySelector('#price-chart'), graphOptions));
-            if(chart) {
-                chart.addAreaSeries().setData(data);
-                chart.timeScale().setVisibleLogicalRange({
-                    from: 0,
-                    to: 10
-                });
-                // chart.timeScale().setVisibleRange({
-                //     from: data[data.length - 1].time / 1000,
-                //     to: data[0].time / 1000
-                // });
+        const amountOfDataPoints = (width) => {
+            if (width >= breakpoints.lg) {
+                return 50;
+            } else if (width >= breakpoints.md) {
+                return 30;
+            } else {
+                return 20;
             }
         }
-        return () => (chart) ? chart.remove() : void(0);
-    }, [currentTradesLoaded]);
-
-    // This hook dynamically adds new values to chart from currentTrades context
-    useEffect(() => {
-        if(currentTradesLoaded && chart) {
-            chart.addAreaSeries().update({
-                time: currentTrades[0].timestamp / 1000,
-                value: currentTrades[0].value
+        if (trades.length) {
+            const data = trades.filter((trade, index) => index <= amountOfDataPoints(width)).reverse().map(trade => {
+                return {
+                    price: trade.price,
+                    time: new Date(trade.timestamp).toLocaleTimeString()
+                }
             });
+            setData(data);
         }
-    }, [currentTrades]);
+    }, [trades, selectedPairData])
 
-    return (
-        <div className="flex h-full w-full z-0 min-h-xs" id="price-chart">
+    useEffect(() => {
+        setBasePrice(selectedPairBasePrice);
+    }, [selectedPairBasePrice]);
 
+    return (selectedPairData && width) ? (
+        <div className= "flex flex-col bg-gray-750 rounded-sm">
+            <SectionTitle title = "Price chart" />
+            <ResponsiveContainer width="99%" height="99%" style={{minHeight: '300px', minWidth: '500px'}}>
+                <AreaChart
+                    width="100%"
+                    height="100%"
+                    data={data}
+                    margin={{
+                        top: 10,
+                        right: 30,
+                        left: 0,
+                        bottom: 0,
+                    }}
+                >
+                    <CartesianGrid stroke = "#4E6166" strokeDasharray="3 3"/>
+                    <XAxis stroke = "#4E6166" dataKey="time"/>
+                    <YAxis type="number" stroke = "#4E6166" allowDecimals = {false} domain={domainRange(basePrice)} dataKey="price"/>
+                    <Tooltip/>
+                    {/*<ReferenceLine y={basePrice} stroke="#4E6166"/>*/}
+                    <Area
+                        type="monotone"
+                        dataKey="price"
+                        stroke="#159f49"
+                        dot={true}
+                        fill="#159F49"
+                        fillOpacity={0.2}
+                        isAnimationActive={false}
+                        animationDuration={500}
+                    />
+                </AreaChart>
+            </ResponsiveContainer>
         </div>
-    );
+
+    ) : null;
 }
