@@ -40,3 +40,23 @@ code {
   background: #26272b;
   border-radius: 3px;
 }
+
+
+.new-trade-positive-enter {
+  background-color: rgba(21, 159, 73, 0.2);
+  transition: background-color 400ms;
+}
+.new-trade-positive-enter-done {
+  transition: background-color 400ms;
+  background-color: transparent;
+}
+
+.new-trade-negative-enter {
+  background-color: rgba(223, 66, 73, 0.2);
+  transition: background-color 400ms;
+}
+.new-trade-negative-enter-done {
+  transition: background-color 400ms;
+  background-color: transparent;
+}
+

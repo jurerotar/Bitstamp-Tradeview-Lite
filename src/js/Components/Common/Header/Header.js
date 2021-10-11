@@ -1,9 +1,9 @@
 import Logo from "./Logo";
 import NavigationLinks from "./NavigationLinks";
-import {useWindowDimensions} from "../../../Plugins/functions";
-import {breakpoints} from "../../../Plugins/constants";
+import {breakpoints} from "../../../Helpers/constants";
+import {useDeviceProperties} from "../../../Providers/DevicePropertiesProvider";
 export default function Header() {
-    const { width } = useWindowDimensions();
+    const { width } = useDeviceProperties();
 
     return (
         <header className = "flex flex-row justify-between dark:bg-gray-1000 px-4 py-4">
