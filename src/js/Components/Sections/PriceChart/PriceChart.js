@@ -13,7 +13,6 @@ export default function PriceChart() {
     const {width} = useDeviceProperties();
 
     const [data, setData] = useState([]);
-    const [basePrice, setBasePrice] = useState(null);
 
     useEffect(() => {
         const amountOfDataPoints = (width) => {
@@ -34,16 +33,12 @@ export default function PriceChart() {
             });
             setData(data);
         }
-    }, [trades, selectedPairData])
+    }, [trades, selectedPairData, width])
 
-    useEffect(() => {
-        setBasePrice(selectedPairBasePrice);
-    }, [selectedPairBasePrice]);
-
-    return (selectedPairData && width) ? (
+    return (selectedPairData) ? (
         <div className= "flex flex-col bg-gray-750 rounded-sm">
             <SectionTitle title = "Price chart" />
-            <ResponsiveContainer width="99%" height="99%" style={{minHeight: '300px', minWidth: '500px'}}>
+            <ResponsiveContainer width="99%" minHeight = {250} height = "99%"  minWidth={0}>
                 <AreaChart
                     width="100%"
                     height="100%"
@@ -57,7 +52,7 @@ export default function PriceChart() {
                 >
                     <CartesianGrid stroke = "#4E6166" strokeDasharray="3 3"/>
                     <XAxis stroke = "#4E6166" dataKey="time"/>
-                    <YAxis type="number" stroke = "#4E6166" allowDecimals = {false} domain={domainRange(basePrice)} dataKey="price"/>
+                    <YAxis type="number" stroke = "#4E6166" allowDecimals = {false} domain={domainRange(selectedPairBasePrice)} dataKey="price"/>
                     <Tooltip/>
                     {/*<ReferenceLine y={basePrice} stroke="#4E6166"/>*/}
                     <Area

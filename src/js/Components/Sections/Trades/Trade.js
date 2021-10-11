@@ -42,8 +42,12 @@ export default function Trade({trade, isPositive, showAnimation}) {
             enter = {showAnimation}
             exit = {showAnimation}
             classNames = {isPositive ? 'new-trade-positive' : 'new-trade-negative'}>
-            <div ref={nodeRef} className="flex flex-row justify-evenly overflow-x-hidden px-1">
-                <p className="flex flex-1 justify-end items-center text-xs text-white">{addTrailingZeros(trade.amount)}</p>
+            <div ref={nodeRef} className="flex flex-row justify-evenly overflow-x-hidden pr-1" style = {{marginBottom: '1px'}}>
+                <span className="flex flex-1 justify-start mr-2 relative" style = {{maxWidth: '25px'}}>
+                    <span className={`flex flex-1 justify-start opacity-50 absolute left-0 top-0 h-full ${(isPositive) ? 'bg-green-default' : 'bg-red-default'}`}
+                        style = {{ width: `${trade.normalized_amount}px`, minWidth: '3px'}} />
+                </span>
+                <p className=" items-center text-xs text-white">{addTrailingZeros(trade.amount)}</p>
                 <p className="flex flex-1 justify-end items-center text-xs text-gray-200">{new Date(trade.timestamp).toLocaleTimeString('sl-SI')}</p>
                 <p className={`flex flex-1 justify-end items-center text-xs ${(isPositive) ? 'text-green-default' : 'text-red-default'}`}>
                     {formatPrice(trade.price)}

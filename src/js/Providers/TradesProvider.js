@@ -14,10 +14,7 @@ function TradesProvider({children}) {
 
 
     // We'll create fake trades around the base price, since we don't have access to actual data
-    const createTrades = (basePrice, amountOfTrades = 100, hasRandomTime = true) => {
-        if(hasRandomTime) {
-            console.log(basePrice);
-        }
+    const createTrades = (basePrice, amountOfTrades = 100, hasRandomTime = true, maximumAmount = 1) => {
         return [...Array(amountOfTrades).keys()].map((el, index) => {
             // Price fluctuates +/- <= 3% around base price
             const fluctuation = randomIntFromInterval(-333, 333) / 10000;
@@ -25,15 +22,17 @@ function TradesProvider({children}) {
             const isTradedAmountNice = randomIntFromInterval(1, 10) <= 5;
 
             // Math.random always returns a number in range (0,1), we parseFloat to remove trailing zeros
-            const tradedAmount = (isTradedAmountNice) ? parseFloat((Math.random()).toFixed(randomIntFromInterval(2, 5))) : parseFloat((Math.random()).toFixed(6));
+            const tradedAmount = (isTradedAmountNice) ? parseFloat((Math.random() * maximumAmount).toFixed(randomIntFromInterval(2, 5))) : parseFloat((Math.random()).toFixed(6));
 
             const timestamp = hasRandomTime ? (Date.now() - randomIntFromInterval(0, 1000) * 5000) : Date.now();
 
             const price = formatPrice(basePrice - (basePrice *  fluctuation));
+            console.log(Math.trunc((tradedAmount / maximumAmount) * 25));
             return {
                 id: timestamp - index,
                 amount: tradedAmount,
                 price: parseFloat(price) === 0 ? '0.001' : price,
+                normalized_amount: Math.trunc((tradedAmount / maximumAmount) * 25),
                 timestamp: timestamp
             }
         });
@@ -54,8 +53,6 @@ function TradesProvider({children}) {
         setSelectedPairBasePrice(newTrade[0].price);
         setHasUpdatedTrades(true);
     }
-    const sortByDateAsc = (a, b) => new Date(b) - new Date(a);
-    const createDefaultTrades = () => createTrades(selectedPairBasePrice, 100, true).sort((a, b) => sortByDateAsc(a.timestamp, b.timestamp))
 
     useEffect(() => {
         if(currentPair.current !== selectedPair) {
@@ -65,6 +62,9 @@ function TradesProvider({children}) {
     }, [selectedPair]);
 
     useEffect(() => {
+        const sortByDateAsc = (a, b) => new Date(b) - new Date(a);
+        const createDefaultTrades = () => createTrades(selectedPairBasePrice, 100, true).sort((a, b) => sortByDateAsc(a.timestamp, b.timestamp))
+
         if(pairsAvailable && currentPair.current !== selectedPair) {
             setTradesLoaded(false);
             const newTrades = createDefaultTrades();

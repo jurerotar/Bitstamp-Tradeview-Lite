@@ -7,12 +7,14 @@ import {usePairs} from "../../../Providers/PairsProvider";
 export default function Trades() {
     const {selectedPair} = usePairs();
     const {trades, tradesLoaded} = useTrades();
-    const showAnimations = useRef(false);
 
+    // Prevent showing the flashing animation on initial trade render
+    const showAnimations = useRef(false);
     useEffect(() => {
         showAnimations.current = false;
     }, [selectedPair]);
 
+    // Show the flashing animation on later periodic trades
     useEffect(() => {
         if(tradesLoaded) {
             showAnimations.current = true;

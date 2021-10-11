@@ -9,9 +9,6 @@ function PairsProvider({children}) {
     const [selectedPairBasePrice, setSelectedPairBasePrice] = useState(null);
     const [pairsAvailable, setPairsAvailable] = useState(false);
 
-
-    const findSelectedPairData = (data) => data.find(pair => pair.pair === selectedPair);
-
     useEffect(() => {
         const fetchPairs = async () => await (await fetch('https://api.jurerotar.si/bitstamp/pairs.json')).json();
         (async () => {
@@ -21,6 +18,8 @@ function PairsProvider({children}) {
     }, []);
 
     useEffect(() => {
+        const findSelectedPairData = (data) => data.find(pair => pair.pair === selectedPair);
+
         if(pairs) {
             setPairsAvailable(false);
 
