@@ -38,6 +38,13 @@ function TradesProvider({children}) {
         });
     }
 
+    // Sorts by increasing timestamps
+    const sortByDateAsc = (a, b) => new Date(b) - new Date(a);
+
+    // Creates a 100 trades
+    const createDefaultTrades = () => createTrades(selectedPairBasePrice, 100, true).sort((a, b) => sortByDateAsc(a.timestamp, b.timestamp))
+
+    // Makes sure every trade only shows 7 digits + comma
     const formatPrice = (price) => {
         const integerLength = Math.trunc(price).toString().length;
         return price.toFixed(7 - (integerLength > 7 ? 2 : integerLength));
@@ -54,6 +61,7 @@ function TradesProvider({children}) {
         setHasUpdatedTrades(true);
     }
 
+    // When user changes a pair, remove all previously created trades
     useEffect(() => {
         if(currentPair.current !== selectedPair) {
             setTradesLoaded(false);
@@ -62,9 +70,6 @@ function TradesProvider({children}) {
     }, [selectedPair]);
 
     useEffect(() => {
-        const sortByDateAsc = (a, b) => new Date(b) - new Date(a);
-        const createDefaultTrades = () => createTrades(selectedPairBasePrice, 100, true).sort((a, b) => sortByDateAsc(a.timestamp, b.timestamp))
-
         if(pairsAvailable && currentPair.current !== selectedPair) {
             setTradesLoaded(false);
             const newTrades = createDefaultTrades();

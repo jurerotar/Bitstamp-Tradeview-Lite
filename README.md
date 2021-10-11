@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/52268125-d3b3-4a4a-bda3-a84bea589763/deploy-status)](https://app.netlify.com/sites/bitstamp-tradeview-lite/deploys)
+
 # Bitstamp Tradeview Lite
 
 Clone of Bitstamp's market page, written in React.js as a learner project. Fully responsive and interactive.

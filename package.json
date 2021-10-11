@@ -20,7 +20,7 @@
   },
   "scripts": {
     "eject": "react-scripts eject",
-    "start": "craco start",
+    "start": "set PORT=3006 && craco start",
     "build": "craco build",
     "test": "craco test"
   },

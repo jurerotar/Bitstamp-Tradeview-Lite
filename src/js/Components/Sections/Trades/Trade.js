@@ -3,10 +3,11 @@ import {useEffect, useRef, useState} from "react";
 
 export default function Trade({trade, isPositive, showAnimation}) {
 
-    const [loaded, setLoaded] = useState(false);
+    // This is used only to fix CSS transition bug
     const nodeRef = useRef(null)
 
-
+    // This is basically to make sure CSS transition works
+    const [loaded, setLoaded] = useState(false);
     useEffect(() => {
         if(trade !== null) {
             setLoaded(true);
@@ -19,6 +20,7 @@ export default function Trade({trade, isPositive, showAnimation}) {
         return (integerLength < 2) ? price : price;
     }
 
+    // If traded amount has less than 6 decimals, we add gray zeros to mimic Bitstamp's design
     const addTrailingZeros = (amount) => {
         if(amount.toString() === '1' || amount.toString() === '0') {
             return <span>
